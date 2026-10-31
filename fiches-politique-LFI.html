@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kit d'argumentation LFI — Toutes les fiches fusionnées et enrichies</title>
+<style>
+  :root{
+    --lfi:#E4002B; --lfi-dark:#A80020; --ink:#1a1a1a; --muted:#5b5b5b;
+    --paper:#fafaf7; --card:#ffffff; --line:#e6e2da; --soft:#f3efe6;
+    --gris:#222;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--paper); color:var(--ink); line-height:1.6;
+  }
+  /* HERO */
+  header.hero{
+    background:linear-gradient(135deg,var(--lfi) 0%,var(--lfi-dark) 100%);
+    color:#fff; padding:64px 24px 56px; text-align:center;
+  }
+  header.hero .tag{letter-spacing:.25em; text-transform:uppercase; font-size:13px; opacity:.9; margin-bottom:14px;}
+  header.hero h1{font-size:clamp(28px,4.5vw,46px); font-weight:800; line-height:1.15; max-width:900px; margin:0 auto 16px;}
+  header.hero p.sub{font-size:clamp(15px,1.6vw,18px); max-width:760px; margin:0 auto; opacity:.95;}
+  header.hero .meta{margin-top:22px; font-size:13px; opacity:.85;}
+
+  .wrap{max-width:980px; margin:0 auto; padding:0 20px;}
+
+  /* TOC */
+  nav.toc{background:var(--card); border:1px solid var(--line); border-radius:12px; margin:-26px auto 0; padding:26px 28px; box-shadow:0 6px 24px rgba(0,0,0,.05);}
+  nav.toc h2{font-size:15px; text-transform:uppercase; letter-spacing:.12em; color:var(--lfi); margin-bottom:14px;}
+  nav.toc ol{columns:2; column-gap:40px; list-style:none; counter-reset:toc;}
+  nav.toc li{counter-increment:toc; margin-bottom:8px; break-inside:avoid;}
+  nav.toc a{text-decoration:none; color:var(--ink); display:flex; align-items:baseline; gap:10px; font-size:14.5px;}
+  nav.toc a::before{content:counter(toc); font-weight:700; color:var(--lfi); width:18px; flex:none;}
+  nav.toc a:hover{color:var(--lfi);}
+  @media(max-width:640px){nav.toc ol{columns:1;}}
+
+  /* intro */
+  section.intro{padding:34px 0 6px;}
+  section.intro .note{background:var(--soft); border-left:4px solid var(--lfi); padding:18px 22px; border-radius:0 10px 10px 0; font-size:15px;}
+
+  /* PART HEADERS */
+  .part{margin:54px 0 26px; display:flex; align-items:center; gap:16px;}
+  .part .ph{font-size:13px; letter-spacing:.18em; color:var(--lfi); text-transform:uppercase; background:var(--card); border:1px solid var(--line); padding:6px 14px; border-radius:999px; white-space:nowrap;}
+  .part h3{font-size:clamp(20px,3vw,28px); font-weight:800; line-height:1.2;}
+
+  /* CARDS */
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:28px 30px; margin:22px 0; box-shadow:0 2px 10px rgba(0,0,0,.03); scroll-margin-top:20px;}
+  .card .cliche{font-size:13px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; margin-bottom:6px;}
+  .card h4{font-size:clamp(19px,2.6vw,24px); font-weight:800; line-height:1.25; margin-bottom:6px;}
+  .card .audience{font-size:13.5px; color:var(--muted); margin-bottom:16px; font-style:italic;}
+  .card .body p{margin:10px 0;}
+  .card ol.pts, .card ul.pts{margin:12px 0 12px 4px; list-style:none;}
+  .card ol.pts>li, .card ul.pts>li{position:relative; padding-left:26px; margin:10px 0;}
+  .card ol.pts>.c1::before, .card ul.pts>.c1::before{content:"①"; position:absolute; left:0; color:var(--lfi); font-weight:700;}
+  .card ol.pts>.c2::before{content:"②"; position:absolute; left:0; color:var(--lfi); font-weight:700;}
+  .card ol.pts>.c3::before{content:"③"; position:absolute; left:0; color:var(--lfi); font-weight:700;}
+  .card ol.pts>.c4::before{content:"④"; position:absolute; left:0; color:var(--lfi); font-weight:700;}
+  .card ul.sub{list-style:none; margin:6px 0 6px 16px;}
+  .card ul.sub li{position:relative; padding-left:16px; color:var(--ink); font-size:14.5px; margin:4px 0;}
+  .card ul.sub li::before{content:"▪"; position:absolute; left:0; color:var(--lfi); font-size:11px; top:4px;}
+  .card .quote{background:var(--soft); border-left:3px solid var(--lfi); padding:12px 16px; border-radius:0 8px 8px 0; font-style:italic; font-weight:600; margin:14px 0;}
+
+  .card .boost{margin-top:20px; background:#eef7ee; border:1px solid #cfe6cf; border-radius:10px; padding:18px 20px;}
+  .card .boost .bt{font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.1em; color:#2e7d32; margin-bottom:10px; display:flex; align-items:center; gap:8px;}
+  .card .boost ul{list-style:none; margin-left:4px;}
+  .card .boost li{position:relative; padding-left:20px; margin:8px 0; font-size:14.5px;}
+  .card .boost li::before{content:"+"; position:absolute; left:0; font-weight:800; color:#2e7d32;}
+
+  .xref{font-size:13px; color:var(--muted); margin-top:14px; padding-top:12px; border-top:1px dashed var(--line);}
+  .xref a{color:var(--lfi); text-decoration:none;}
+  .xref a:hover{text-decoration:underline;}
+
+  footer{margin:60px 0 40px; text-align:center; font-size:13px; color:var(--muted);}
+  footer .back{display:inline-block; margin-top:10px; color:#fff; background:var(--lfi); padding:10px 22px; border-radius:999px; text-decoration:none; font-weight:700; font-size:14px;}
+  footer .back:hover{background:var(--lfi-dark);}
+
+  @media(max-width:640px){
+    .card{padding:22px 20px;}
+    nav.toc{padding:20px;}
+    .part{flex-direction:column; align-items:flex-start; gap:8px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="tag">Fiches Politique LFI — Édition fusionnée &amp; enrichie</div>
+  <h1>Répondre, déconstruire, convaincre : le kit d'argumentation complet</h1>
+  <p class="sub">Les 18 fiches d'argumentaire fusionnées et approfondies : réponse à chaque accusation, démontage des idées reçues, et présentation du projet — avec arguments renforcés, liens croisés entre fiches et angles d'attaque.</p>
+  <div class="meta">Document généré et synthétisé · mis à jour 2026 · Fiches originales conservées &amp; arguments enrichis</div>
+</header>
+
+<div class="wrap">
+
+<nav class="toc">
+  <h2>Sommaire</h2>
+  <ol>
+    <li><a href="#f1">Répondre aux accusations contre LFI</a></li>
+    <li><a href="#f2">LFI est antisémite ?</a></li>
+    <li><a href="#f3">LFI est trop laxiste ?</a></li>
+    <li><a href="#f4">LFI est trop radical ?</a></li>
+    <li><a href="#f5">LFI communautarise / fait du clientélisme ?</a></li>
+    <li><a href="#f6">LFI va ruiner le pays ?</a></li>
+    <li><a href="#f7">« Mélenchon, jamais de la vie »</a></li>
+    <li><a href="#f8">LFI n'est pas « extrême »</a></li>
+    <li><a href="#f9">Le RN n'est pas « pour les petites gens »</a></li>
+    <li><a href="#f10">Déconstruire l'immigration</a></li>
+    <li><a href="#f11">Le mythe du « bon immigré »</a></li>
+    <li><a href="#f12">Police et « racaille »</a></li>
+    <li><a href="#f13">Banlieues contre zones rurales ?</a></li>
+    <li><a href="#f14">« Les gauchos sont des assistés »</a></li>
+    <li><a href="#f15">La fabrique de la peur</a></li>
+    <li><a href="#f16">La richesse confisquée / ruiner</a></li>
+    <li><a href="#f17">La propagande des médias</a></li>
+    <li><a href="#f18">La 6ᵉ République</a></li>
+    <li><a href="#f19">3 arguments « déclics » pour un vote LFI</a></li>
+  </ol>
+</nav>
+
+<section class="intro">
+  <div class="note">
+    <strong>Mode d'emploi de ce document.</strong> Chaque fiche reprend l'intégralité du contenu original puis le <em>renforce</em> : arguments supplémentaires, données et précédents à mobiliser, formulations percutantes, et renvois croisés vers les autres fiches du kit. Les sections <strong>« + Pour aller plus loin »</strong> indiquent les angles d'approfondissement. Conçu pour être utilisé aussi bien en porte-à-porte, en débat de proximité que sur les réseaux sociaux.
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<SECTION class="part"><span class="ph">Partie A</span><h3>Répondre aux accusations contre LFI</h3></SECTION>
+
+<div class="card" id="f2">
+  <div class="cliche">L'accusation à déconstruire</div>
+  <h4>« LFI est antisémite »</h4>
+  <div class="audience">Interlocuteur : quelqu'un qui répercute l'accusation relayée par les médias et la droite.</div>
+  <div class="body">
+    <ol class="pts">
+      <li class="c1"><strong>Cadre juridique et antiraciste de LFI.</strong> LFI s'inscrit dans la tradition de la gauche républicaine universaliste ; son programme condamne fermement toutes les formes de racisme, y compris l'antisémitisme.</li>
+      <li class="c2"><strong>Distinguer antisémitisme et antisionisme.</strong> LFI condamne les violations du droit international à Gaza ou en Cisjordanie (tout comme de nombreuses ONG et juridictions mondiales) et défend le droit du peuple palestinien à un État. Mais critiquer un gouvernement n'est pas attaquer une communauté religieuse.<br>
+      <em class="rhet">Est-ce que la Cour internationale de justice est antisémite ? Est-ce qu'Amnesty International, Médecins Sans Frontières sont antisémites ?</em></li>
+      <li class="c3"><strong>Regarder la réalité des données.</strong> Dans les rapports annuels de la CNCDH, la prévalence des préjugés antisémites est la plus forte à l'extrême droite. De nombreuses enquêtes sociologiques indiquent que les sympathisants de gauche (y compris LFI) adhèrent majoritairement aux valeurs d'égalité et de lutte contre toutes les discriminations.</li>
+      <li class="c4"><strong>Instrumentalisation politique.</strong>
+        <ul class="sub">
+          <li><strong>Blanchir l'extrême droite :</strong> c'est de Mélenchon ou de Bardella que Mediapart vient de déterrer tous les propos antisémites ? Le RN a été fondé par des nazis SS et des pétainistes qui cherchent à se dédiaboliser en pointant un faux coupable.</li>
+          <li><strong>Disqualifier l'opposition :</strong> coller l'étiquette « antisémitisme » à LFI permet d'éviter de débattre des vrais sujets : les retraites, le SMIC.</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+  <div class="boost">
+    <div class="bt">+ Pour aller plus loin — renforcer l'argument</div>
+    <ul>
+      <li><strong>Retourner la charge :</strong> demander les preuves précises (« Cite-moi UN texte de programme, UNE position officielle antisémite »). Face au vide, l'accusation devient insaisissable.</li>
+      <li><strong>La critique d'un État ≠ haine d'un peuple :</strong> distinguer systématiquement la politique du gouvernement israélien et le peuple juif ; LFI condamne l'un sans jamais viser l'autre.</li>
+      <li><strong>Antisémitisme réel :</strong> rappeler que les actes antisémites en France sont majoritairement commis dans un contexte où l'extrême droite et certains médias instrumentalisent les tensions internationales. Ne jamais laisser la gauche hors du camp antiraciste : l'universalisme LFI est le rempart historique.</li>
+      <li><strong>Méthode :</strong> ne pas se mettre sur la défensive — passer à l'offensive des valeurs (« est-ce que défendre le droit international et la dignité humaine, c'est de la haine ? »).</li>
+      <li><span class="ref">Liens croisés :</span> voir fiche <a href="#f8">« Les extrêmes »</a> (valeurs LFI ≠ RN), fiche <a href="#f17">« Propagande des médias »</a> (fabrication du consentement), fiche <a href="#f15">« Fabrique de la peur »</a>.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card" id="f3">
+  <div class="cliche">L'accusation à déconstruire</div>
+  <h4>« LFI est trop laxiste » (insécurité, drogue, délinquance)</h4>
+  <div class="audience">Interlocuteur : préoccupé par la sécurité, tenté par le discours sécuritaire de droite.</div>
+  <div class="body">
+    <ol class="pts">
+      <li class="c1"><strong>« Racailles » ≠ immigration.</strong> Les instituts de recherche en sociologie ont montré que la délinquance est liée à l'âge, au niveau d'études et à la précarité, <em>jamais à l'origine</em>. Les « étrangers » sont surreprésentés dans les délits « de rue » (souvent dus à la misère, et ils sont beaucoup plus contrôlés — donc c'est logique), mais les crimes économiques de grande ampleur coûtent <strong>100 milliards d'euros par an</strong> à la France et sont commis par des élites.<br>
+      <em>Position LFI : « La sûreté est un droit fondamental, mais la politique sécuritaire de la droite n'est pas la solution. »</em></li>
+      <li class="c2"><strong>Réponses sécuritaires alternatives.</strong>
+        <ul class="sub">
+          <li><strong>Retour de la police de proximité</strong> (modèle norvégien) : fin de la BAC pour réaffecter les effectifs dans des brigades de secteur au contact des habitants — police qui patrouille à pied, à vélo, qui connaît commerçants et jeunes. Prévenir plutôt que guérir, rétablir confiance et dialogue social. <em>Métaphore : on ne guérit pas ta fatigue, mais ton cancer.</em></li>
+          <li><strong>Recrutement massif</strong> de juges, greffiers et enquêteurs pour juger plus vite et plus efficacement.</li>
+          <li><strong>Fin des contrôles au faciès</strong> : remettre un récépissé lors du contrôle. <em>« Comment un jeune fait-il confiance à la République quand il se sent incriminé par elle ? »</em> + interdire grenades et LBD, privilégier les techniques de désescalade.</li>
+        </ul>
+      </li>
+      <li class="c3"><strong>Légalisation encadrée du cannabis.</strong>
+        <ul class="sub">
+          <li>Retirer le pactole financier aux réseaux de trafic ; reprendre le contrôle du territoire avec l'effondrement du marché noir.</li>
+          <li>Créer des rentrées fiscales + entre <strong>30k et 80k emplois directs</strong>, au lieu d'alimenter une éco souterraine.</li>
+          <li>L'interdiction crée un tabou moral qui empêche la prévention (ex. : au Canada, la consommation a même baissé malgré la légalisation).</li>
+        </ul>
+      </li>
+    </ol>
+    <div class="quote">Aujourd'hui, l'insécurité arrange la droite (au prix de la misère humaine) : coups médiatiques qui renforcent la peur, exploitation d'une main d'œuvre à moindre coût…</div>
+    <p><em>« Ce sont les faiblesses exploitables du peuple qui permettent le crime, et c'est la société qui les produit »</em> — chômeurs même plus comptés, logements en miettes, travail au noir misérable, racisme, services publics en décrochage.</p>
+  </div>
+  <div class="boost">
+    <div class="bt">+ Pour aller plus loin — renforcer l'argument</div>
+    <ul>
+      <li><strong>Refuser la fausse alternative</strong> « sécuritaire contre laxiste » : LFI propose une vraie politique de sécurité (enquête, juges, prévention) qui donne des résultats, pas un affichage.</li>
+      <li><strong>Citer les bilans comparés :</strong> la police de proximité a fait reculer la délinquance là où elle a existé ; la suppression de 2010 (Sarkozy) s'est accompagnée d'un éloignement police-population.</li>
+      <li><strong>Cannabis :</strong> opposer la situation française (1er consommateur d'Europe, marché noir florissant, 0 rentrée fiscale, garde-à-vue pour consommation) aux pays régulés qui encaissent taxes, créent des emplois et réduisent la criminalité de trafic.</li>
+      <li><strong>Économie de la peur :</strong> montrer que le « chiffre » et l'affichage médiatique ne font pas baisser la délinquance — ils la déplacent et alimentent la méfiance (cf. fiche <a href="#f15">« Fabrique de la peur »</a>).</li>
+      <li><span class="ref">Liens croisés :</span> fiche <a href="#f12">« Police et racaille »</a>, fiche <a href="#f15">« Fabrique de la peur »</a>.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card" id="f4">
+  <div class="cliche">L'accusation à déconstruire</div>
+  <h4>« LFI est trop radical »</h4>
+  <div class="audience">Interlocuteur : tenté par Attal ou Philippe, ou par le « en même temps » centriste.</div>
+  <div class="body">
+    <ol class="pts">
+      <li class="c1"><strong>La grande illusion du macronisme.</strong> Sous Macron (avec Philippe puis Attal), la dette publique a explosé ; le déficit dépassait 5,5 % du PIB (hors crise sanitaire) au point que la France s'est fait cadrer par la Commission européenne. Où est passé cet argent ? Pas dans les services publics ni les salaires, mais dans des <strong>cadeaux fiscaux non conditionnés</strong> aux grandes entreprises. Avant de voter Attal ou Philippe « par pragmatisme », regarde le bilan de leur mandat.</li>
+      <li class="c2"><strong>L'illusion du « bon élève » Gabriel Attal.</strong> Il mise sur son image de jeune homme poli, « au-dessus des partis ». En réalité, c'est un <strong>Macron 2.0</strong> : retraite à 64 ans, précarisation des chômeurs, baisse des moyens de l'école publique. Pourquoi n'y a-t-il jamais eu autant de classes sans profs à la rentrée sous son mandat ?</li>
+      <li class="c3"><strong>Le mythe de la « sagesse » d'Édouard Philippe.</strong> Se positionne comme le « recours raisonnable et expérimenté ». En réalité, auteur principal de la casse du modèle social (répression des gilets jaunes, blocage du SMIC). Son projet : aller <strong>encore plus loin dans l'austérité</strong> (retraite à 65-67 ans, coupes massives de la sécu). Il corrige la crise qu'il a créée en coupant encore plus.</li>
+      <li class="c4"><strong>Conclusion.</strong> LFI est la seule solution rationnelle : relance par la demande, justice fiscale, sauvetage des services publics.<br>
+      <div class="quote">« Voter Attal ou Philippe, c'est comme engager un maçon qui a creusé des fissures dans toutes les fondations de ta maison et qui te demande un second mandat pour mettre un coup de peinture par-dessus ! »</div></li>
+    </ol>
+  </div>
+  <div class="boost">
+    <div class="bt">+ Pour aller plus loin — renforcer l'argument</div>
+    <ul>
+      <li><strong>La « radicalité » est dans la réalité, pas dans les mots :</strong> ce qui est radical, c'est la retraite à 64 ans imposée sans vote, la casse des services publics, les milliers de milliards de dette pour financer le capital — pas le fait de la demander une semaine au peuple.</li>
+      <li><strong>Inverser le prisme :</strong> le « sérieux budgétaire » de droite = austérité pour les travailleurs + cadeaux pour les milliardaires. La « radicalité » LFI = rendre l'argent volé par la fraude et les niches fiscales (<a href="#f6">fiche « Ruiner le pays »</a>).</li>
+      <li><strong>Refuser l'étiquette pour fixer le débat :</strong> « Radical ? Radical de vouloir des salaires dignes, des hôpitaux qui soignent, des écoles qui enseignent et une retraite avant d'être usé ? Si c'est ça, assumons. »</li>
+      <li><span class="ref">Liens croisés :</span> fiche <a href="#f8">« Les extrêmes »</a>, fiche <a href="#f6">« LFI va ruiner le pays »</a>, fiche <a href="#f16">« La richesse confisquée »</a>.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card" id="f5">
+  <div class="cliche">L'accusation à déconstruire</div>
+  <h4>« LFI communautarise la société / fait du clientélisme »</h4>
+  <div class="audience">Interlocuteur : reprend l'idée que LFI s'adresserait à des « communautés ».</div>
+  <div class="body">
+    <ol class="pts">
+      <li class="c1"><strong>LFI cherche la justice sociale, pas le communautarisme.</strong> LFI ne parle pas aux gens selon leur origine ou religion, mais selon leur <strong>condition sociale et matérielle</strong>. Les banlieues et quartiers populaires concentrent les plus hauts taux de pauvreté et de manque de services publics — il est donc logique qu'un programme redistributif résonne fortement auprès de ces populations. Ce n'est pas du communautarisme, c'est de la lucidité.</li>
+      <li class="c2"><strong>Qui fait vraiment du « clientélisme » ?</strong> Quand la droite baisse les impôts des plus fortunés et offre des niches fiscales aux grandes entreprises, personne ne parle de « clientélisme » mais de « politique économique ». Pourquoi défendre l'égalité des droits et des services publics pour les habitants de quartiers défavorisés devient soudain du communautarisme ?</li>
+      <li class="c3"><strong>Universalisme contre communautarisme.</strong> LFI ne demande aucun « privilège » pour une communauté, mais l'application stricte de la Constitution et de l'universalisme républicain.
+        <ul class="sub">
+          <li><strong>Égalité des droits :</strong> demander la fin du contrôle au faciès (comme l'a exigé la Cour de cassation), c'est exiger l'égalité républicaine.</li>
+          <li><strong>LFI défend la loi de 1905, la laïcité d'origine :</strong> liberté de conscience et neutralité de l'État — ne financer ni ne stigmatiser aucune religion. C'est la droite qui a détourné la laïcité en outil d'exclusion contre les musulmans.</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+  <div class="boost">
+    <div class="bt">+ Pour aller plus loin — renforcer l'argument</div>
+    <ul>
+      <li><strong>Étymologie et retournement :</strong> le « clientélisme » désigne l'échange de faveurs contre loyauté. Qui distribue des cadeaux fiscaux aux milliardaires en échange de soutiens ? Le vrai clientélisme est en haut, pas en bas.</li>
+      <li><strong>Universaliser, pas diviser :</strong> le programme LFI (SMIC, retraite, école, hôpital) profite à tous, y compris aux quartiers populaires — précisément parce qu'il est universel. C'est le contraire du communautarisme.</li>
+      <li><strong>Rappel historique :</strong> la laïcité de 1905 a été arrachée contre la droite d'Église ; la défendre aujourd'hui contre l'instrumentalisation électorale, c'est en être fidèle, pas lui tourner le dos.</li>
+      <li><span class="ref">Liens croisés :</span> fiche <a href="#f18">« 6ᵉ République »</a>, fiche <a href="#f13">« Banlieues / rural »</a> (pourquoi les quartiers populaires), fiche <a href="#f12">« Police »</a>.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card" id="f6">
+  <div class="cliche">L'accusation à déconstruire</div>
+  <h4>« LFI va ruiner le pays »</h4>
+  <div class="audience">Interlocuteur : inquiet pour l'économie, les impôts, « oui mais les riches vont partir ».</div>
+  <div class="body">
+    <ol class="pts">
+      <li class="c1"><strong>« LFI va ruiner le pays » ? C'est l'inverse.</strong> C'est sous la droite et sous Macron que la dette a explosé (+ 1 000 milliards), encouragée par une politique ultra-favorable au secteur privé. LFI est le seul parti qui présente un budget équilibré et financé (programme validé par des centaines d'économistes dont des prix Nobel).
+        <ul class="sub">
+          <li><strong>Relance par la demande :</strong> pouvoir d'achat aux classes moyennes et populaires (SMIC 1 600 €, retraite 60 ans, blocage des prix de première nécessité) = argent réinjecté directement dans la consommation. Ex. : quand l'Espagne a augmenté son SMIC de 22 %, la consommation a augmenté et le chômage a baissé.</li>
+          <li><strong>Pas une guerre aux PME :</strong> faire payer les multinationales et les milliardaires pour alléger les charges des petites entreprises et des indépendants.</li>
+        </ul>
+      </li>
+      <li class="c2"><strong>La France : un paradis fiscal pour milliardaires.</strong> Classes moyennes et supérieures : 45-50 % d'imposition. Les 37 plus grandes fortunes de France : à peine <strong>2 % d'impôt personnel</strong>, et même en ajoutant l'impôt de leurs entreprises, contribution globale sous les 26 %. Les milliardaires stockent leurs gains dans des holdings et vivent d'emprunts garantis par leurs actions. <em>Un boulanger ou un cadre paie deux fois plus en impôts qu'un milliardaire.</em>
+        <div class="quote">C'est comme un restaurant à 10 personnes : 9 payent 30 € chacun (la moitié de leur argent), le plus riche — champagne et caviar — ne paie que 2 €. Injuste, non ?</div>
+        <span>LFI veut donc appliquer la <strong>taxe Zucman</strong> (impôt plancher minimal de 2 % sur le patrimoine des ultra-riches) et <strong>réintégrer les holdings</strong> dans l'assiette fiscale pour la justice fiscale.</span>
+      </li>
+      <li class="c3"><strong>« Oui mais les riches vont partir » : NON !</strong>
+        <ul class="sub">
+          <li>Suppression de l'ISF en 2018 = aucun retour massif des exilés fiscaux (+ 0,1 point). Si baisser les impôts ne les fait pas revenir, les augmenter ne les fera pas partir.</li>
+          <li>Leurs actifs sont ancrés en France : on ne délocalise pas usines, immobilier de luxe et sièges sociaux en un claquement de doigts.</li>
+          <li><strong>Exit Tax renforcé</strong> (taxer les plus-values latentes au départ) + <strong>imposition liée à la nationalité</strong> (modèle américain) : le milliardaire expatrié paie la différence ; s'il refuse, il renonce à sa nationalité française et à ses droits.</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+  <div class="boost">
+    <div class="bt">+ Pour aller plus loin — renforcer l'argument</div>
+    <ul>
+      <li><strong>Le budget LFI est chiffré :</strong> recettes fléchées (taxe Zucman, réintégration des holdings, lutte contre la fraude ~80-100 Mds€) face aux dépenses (SMIC, retraite 60 ans). Opposer « qui est financé ? » : le programme macroniste ne l'est pas.</li>
+      <li><strong>Justice, pas idéologie :</strong> la taxation des ultra-riches existe déjà partout (modèles nordiques, États-Unis). C'est l'exception française d'exonération qui est anormale.</li>
+      <li><strong>Relance contre austérité :</strong> donner du pouvoir d'achat crée de la croissance et donc des recettes ; l'austérité à la française (retraite 64 ans) a creusé la dette. (voir <a href="#f4">« Trop radical »</a>)</li>
+      <li><span class="ref">Liens croisés :</span> fiche <a href="#f16">« La richesse confisquée »</a>, fiche <a href="#f14">« Assistés »</a> (200 Mds d'aides au capital), fiche <a href="#f4">« Trop radical »</a>.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card" id="f7">
+  <div class="cliche">L'accusation à déconstruire</div>
+  <h4>« Mélenchon, jamais de la vie »</h4>
+  <div class="audience">Interlocuteur : bloque sur la personnalité (mensonges, agressivité, richesse).</div>
+  <div class="body">
+    <ol class="pts">
+      <li class="c1"><strong>« C'est un menteur, son programme est irréaliste » ?</strong> Le programme « L'Avenir en commun » est le seul chiffré <strong>ligne par ligne</strong> par un collectif de plus de 100 économistes et hauts fonctionnaires (budget bouclé recettes/dépenses). L'irréalisme, c'est de croire que la vie va s'améliorer toute seule en restant au SMIC, avec une retraite toujours plus tardive et des services publics démantelés. Ce que propose Mélenchon est financé par la fin des cadeaux fiscaux aux ultra-riches. <em>Pourquoi ne serais-tu pas digne d'une meilleure vie ?</em></li>
+      <li class="c2"><strong>« Trop agressif / antipathique » ?</strong> Le traitement médiatique isole systématiquement ses éclats de voix et efface son sourire (alors que Le Pen est toujours montrée souriante). Dans ses interviews et podcasts, il est posé et réfléchi, bien plus que les autres candidats.<br>
+      <div class="quote">« Tu as le droit de ne pas aimer sa tête ou sa façon de parler, je ne te demande pas de partir en vacances avec lui. Mais tu votes pour la personnalité d'un homme ou pour les conditions de travail et l'avenir de tes enfants ? »</div></li>
+      <li class="c3"><strong>« Un politique riche qui fait la leçon » ?</strong> Oui, Mélenchon a été sénateur, député, ministre — mais il ne s'en cache pas, et a utilisé ce mandat pour construire le seul gros parti qui défend réellement les travailleurs.<br>
+      <em>Rappel : ne pas aimer Mélenchon est presque une bonne chose, car son pouvoir sera grandement limité par la 6ᵉ République (<a href="#f18">voir la fiche dédiée</a>).</em></li>
+    </ol>
+  </div>
+  <div class="boost">
+    <div class="bt">+ Pour aller plus loin — renforcer l'argument</div>
+    <ul>
+      <li><strong>Dissocier personne et programme :</strong> ne jamais laisser la conversation glisser sur la psychologie ; la ramener au programme et au bilan chiffré.</li>
+      <li><strong>Le candidat ≠ le système :</strong> la 6ᵉ République réduit le poids de la personnalité — on vote un projet collectif, pas un homme providentiel (contrairement au système actuel). C'est un argument fort auprès des réfractaires.</li>
+      <li><strong>Bilan comparé :</strong> évoquer les affaires, mensonges et cynisme des autres candidats (retraite 64 ans imposée, gilets jaunes réprimés) pour relativiser « l'agressivité » jugée à l'aune de l'injustice subie.</li>
+      <li><span class="ref">Liens croisés :</span> fiche <a href="#f18">« 6ᵉ République »</a>, fiche <a href="#f4">« Trop radical »</a>, fiche <a href="#f17">« Propagande des médias »</a>.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card" id="f8">
+  <div class="cliche">L'accusation à déconstruire</div>
+  <h4>« Les extrêmes ne sont jamais bons » (&amp; LFI n'est pas « extrême »)</h4>
+  <div class="audience">Interlocuteur : refrain « ni extrême gauche ni extrême droite », assimilation LFI = RN.</div>
+  <div class="body">
+    <ol class="pts">
+      <li class="c1"><strong>LFI n'est PAS classée à l'extrême gauche.</strong> Selon la grille des nuances politiques du Ministère de l'Intérieur, LFI est classée dans le bloc de la gauche (comme le PS), contrairement à Lutte Ouvrière ou au NPA (extrême gauche). Le RN, lui, est officiellement classé à l'extrême droite. <em>Et puis, « que trouves-tu extrême dans leur programme ? La hausse des salaires ? La reprise en main des hôpitaux ? La justice fiscale ? » Souvent, l'interlocuteur ne trouve rien à répondre…</em></li>
+      <li class="c2"><strong>LFI / RN : des valeurs diamétralement opposées.</strong>
+        <ul class="sub">
+          <li><strong>Valeur centrale :</strong> LFI = égalité sociale &amp; progrès ≠ RN = préférence nationale (trier les humains selon leur origine).</li>
+          <li><strong>Institutions :</strong> LFI = plus de démocratie directe (6ᵉ République) ≠ RN = concentration du pouvoir (présidentialisme renforcé, contournement du Conseil constitutionnel).</li>
+          <li><strong>Cible politique :</strong> LFI = les ultra-riches et multinationales qui accaparent le capital ≠ RN = immigrés et minorités, les boucs émissaires d'en bas.</li>
+        </ul>
+      </li>
+      <li class="c3"><strong>Métaphore et perspective historique.</strong> Dire « les deux extrêmes se valent », c'est comme dire qu'un pompier qui casse une porte pour éteindre un feu est aussi dangereux que le pyromane qui l'a allumé. Et si défendre petites retraites, travailleurs, étudiants, services publics (en haussant parfois la voix face au 49.3) est « dangereux », alors toute la gauche historique qui a obtenu congés payés et sécu sociale était elle aussi « dangereuse ».</li>
+    </ol>
+  </div>
+  <div class="boost">
+    <div class="bt">+ Pour aller plus loin — renforcer l'argument</div>
+    <ul>
+      <li><strong>Poser la question décisive :</strong> « entre protéger le capital ou protéger les travailleurs, de quel côté veux-tu être ? » — l'opposition réelle n'est pas la forme mais le fond.</li>
+      <li><strong>Refuser la fausse symétrie :</strong> confondre critiquer le Président à l'Assemblée (49.3) avec renverser la démocratie (RN, Vichy) est intellectuellement malhonnête.</li>
+      <li><strong>Histoire :</strong> les acquis sociaux (sécu, congés payés, retraites) ont été conquis contre la droite, jamais avec l'extrême droite — qui, au pouvoir, a toujours détruit les acquis sociaux (<a href="#f10">fiche « Immigration » histoire</a>).</li>
+      <li><span class="ref">Liens croisés :</span> fiche <a href="#f9">« RN petites gens »</a>, fiche <a href="#f2">« Antisémitisme »</a>, fiche <a href="#f15">« Fabrique de la peur »</a>, fiche <a href="#f18">« 6ᵉ République »</a>.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<SECTION class="part"><span class="ph">Partie B</span><h3>Démonter la droite et le RN</h3></SECTION>
+
+<div class="card" id="f9">
+  <div class="cliche">Le mensonge à déconstruire</div>
+  <h4>« Le RN est pour les petites gens »</h4>
+  <div class="audience">Interlocuteur : classe populaire tenté par le vote RN « par colère ».</div>
+  <div class="body">
+    <ol class="pts">
+      <li class="c1"><strong>Le RN vote sans cesse CONTRE les travailleurs :</strong>
+        <ul class="sub">
+          <li>Contre l'augmentation du SMIC à 1 600 €</li>
+          <li>Contre le blocage des prix de l'alimentation et de l'énergie</li>
+          <li>Contre l'indexation automatique des salaires sur l'inflation</li>
+          <li>Contre l'obligation pour les grandes entreprises aidées par l'État de monter les salaires</li>
+        </ul>
+      </li>
+      <li class="c2"><strong>Le RN protège les plus riches :</strong>
+        <ul class="sub">
+          <li>Contre la taxation obligatoire des bénéfices exceptionnels des géants pétroliers (TotalEnergies) ou maritimes pendant l'inflation</li>
+          <li>Contre le rétablissement de l'ISF</li>
+          <li>Propose de baisser la TVA sur l'énergie, MAIS sans blocage des prix garanti : la baisse finit dans les marges des fournisseurs, pas dans les poches des ménages.</li>
+        </ul>
+      </li>
+    </ol>
+    <div class="quote">En bref : ils utilisent la colère des gens sur l'immigration pour faire oublier qu'au moment de voter les lois, ils sont TOUJOURS du côté des patrons riches.</div>
+  </div>
+  <div class="boost">
+    <div class="bt">+ Pour aller plus loin — renforcer l'argument</div>
+    <ul>
+      <li><strong>Relever le paradoxe :</strong> « Le parti qui prétend défendre les "petites gens" vote systématiquement contre le SMIC, contre le blocage des prix, contre l'ISF. C'est peut-être le meilleur indicateur de ce qu'il défend vraiment. »</li>
+      <li><strong>Discours contre bilan :</strong> comparer ce que le RN dit en meeting et ce qu'il fait au moment des votes (traçables, publiques). Les votes sont des preuves, pas les slogans.</li>
+      <li><strong>TVA énergie :</strong> la baisse de TVA sans contrôle des prix = transfert aux actionnaires des énergéticiens (explication concrète, anti-technique).</li>
+      <li><span class="ref">Liens croisés :</span> fiche <a href="#f10">« Immigration »</a> (usée comme diversion), fiche <a href="#f15">« Fabrique de la peur »</a>, fiche <a href="#f19">« 3 arguments déclics »</a>, fiche <a href="#f8">« Extrêmes »</a>.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<SECTION class="part"><span class="ph">Partie C</span><h3>Immigration : déconstruire les clichés</h3></SECTION>
+
+<div class="card" id="f10">
+  <div class="cliche">Idées reçues à déconstruire</div>
+  <h4>Immigration — le démontage des 4 clichés</h4>
+  <div class="audience">Interlocuteur : répercute les clichés médiatiques sur l'accueil, le coût, les services publics.</div>
+  <div class="body">
+    <ol class="pts">
+      <li class="c1"><strong>Cliché : « LFI veut accueillir toute la misère du monde ».</strong>
+        <ul class="sub">
+          <li>Personne ne quitte son pays au péril de sa vie pour le plaisir de toucher 400 € en France.</li>
+          <li>Plus de <strong>80 % des réfugiés vont dans les pays voisins</strong>, pas en Europe. (Seulement 3 % de la population mondiale est en situation d'immigration.)</li>
+          <li><strong>Position LFI :</strong> s'attaquer aux <em>causes réelles</em> des migrations (guerres, dérèglement climatique, pillage économique du Sud). Si tu veux moins de réfugiés, arrête de détruire ces pays avec des accords commerciaux inégaux.</li>
+        </ul>
+      </li>
+      <li class="c2"><strong>Cliché : « Les immigrés coûtent trop cher / ont trop d'aides ».</strong>
+        <ul class="sub">
+          <li>La plupart des travailleurs immigrés sont jeunes, travaillent, consomment, paient des taxes (TVA) et des cotisations — ils financent en partie nos retraites et la Sécu (sources : OCDE, ministère de l'Économie). <em>Ils rapportent plus à l'État qu'ils ne coûtent.</em></li>
+          <li>L'AME (aide médicale d'État) représente à peine <strong>0,5 % du budget de la santé</strong>. Et c'est une question de bon sens : mieux vaut soigner une maladie infectieuse que d'engorger les urgences.</li>
+        </ul>
+      </li>
+      <li class="c3"><strong>Cliché : « Nos services publics étouffent à cause d'eux ».</strong>
+        <ul class="sub">
+          <li>Si hôpitaux, chantiers, éboueurs et maisons de retraite arrêtaient d'employer des travailleurs immigrés, le pays s'arrêterait en 24h.</li>
+          <li>Ce ne sont pas eux qui ferment des lits d'hôpital ou suppriment des postes de profs, mais les gouvernements de droite depuis 20 ans. Ne pas se tromper de coupable.</li>
+        </ul>
+      </li>
+      <li class="c4"><strong>Cliché : « La régularisation des sans-papiers crée une concurrence déloyale pour nos ouvriers ».</strong>
+        <ul class="sub">
+          <li>C'est la précarité et le travail clandestin qui tirent les salaires vers le bas, pas la régularisation.</li>
+          <li>Beaucoup de patrons adorent les sans-papiers : sous-payés, 50h sans heures sup, jetables à volonté. C'est cette exploitation qui fait baisser les salaires de tout le monde.</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+  <div class="boost">
+    <div class="bt">+ Pour aller plus loin — renforcer l'argument</div>
+    <ul>
+      <li><strong>Détacher l'émotion de la réalité :</strong> 80 % des réfugiés restent près de chez eux ; l'Europe (et la France) accueille une part mineure. L'image d'une « submersion » est contredite par les chiffres (3 % de la population mondiale immigrée).</li>
+      <li><strong>Retourner le « coût » :</strong> la vraie dépense, ce sont les 80-100 Mds€ de fraude fiscale par an (<a href="#f14">fiche « Assistés »</a>), pas l'AME à 0,5 % de la santé.</li>
+      <li><strong>Cause racine :</strong> guerre, climat, dettes du Sud — notre politique commerciale crée les migrations qu'on prétend « subir ». Résoudre la cause, c'est le volontarisme, pas la naïveté.</li>
+      <li><strong>Unite travailleurs :</strong> la précarité des sans-papiers tire tous les salaires vers le bas ; les régulariser, c'est protéger les salariés français aussi (voir <a href="#f11">« Mythe du bon immigré »</a>).</li>
+      <li><span class="ref">Liens croisés :</span> fiche <a href="#f11">« Mythe du bon immigré »</a>, fiche <a href="#f14">« Assistés »</a>, fiche <a href="#f15">« Fabrique de la peur »</a>.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card" id="f11">
+  <div class="cliche">Idée reçue à déconstruire</div>
+  <h4>Le mythe du « bon immigré »</h4>
+  <div class="audience">Interlocuteur : « les anciens immigrés s'intégraient, pas les nouveaux ».</div>
+  <div class="body">
+    <ol class="pts">
+      <li class="c1"><strong>L'histoire se répète.</strong> Ce que la société dit des arabes aujourd'hui est le copier-coller exact de ce qu'elle disait des Italiens (fin du XIX<sup>e</sup>) et des Portugais (années 60-70). La presse accusait les Italiens d'être des voyous violents et ingérables — jusqu'au Massacre d'Aigues-Mortes en 1893 (ouvriers lynché·e·s à mort). Dans les années 60, les Portugais des bidonvilles de Champigny-sur-Marne ou Saint-Denis étaient accusés d'importer la misère et de « ne pas respecter les règles françaises ».<br>
+      <strong>Mécanisme de la mémoire amnésique :</strong> une fois la communauté intégrée (2-3 générations), la société invente l'image d'un « bon immigré d'autrefois » pour mieux rejeter le nouveau venu.</li>
+      <li class="c2"><strong>Conditions d'intégration complètement différentes.</strong>
+        <ul class="sub">
+          <li><strong>Trente Glorieuses :</strong> travail industriel / BTP en masse, sans diplômes, ascenseur social fonctionnait.</li>
+          <li><strong>Aujourd'hui :</strong> chômage massif des jeunes non qualifiés, industrie effondrée, services publics abandonnés. Concentration dans les cités, là où les Portugais achetaient progressivement des maisons en province.</li>
+        </ul>
+      </li>
+      <li class="c3"><strong>Diviser pour mieux régner.</strong> En poussant les Français « anciens immigrés » à mépriser les arabes et les noirs, la droite s'assure qu'ils ne s'unissent pas sur ce qu'ils partagent : le statut de travailleurs, les bas salaires, la baisse des retraites, la dégradation des hôpitaux. Pour LFI : qu'on s'appelle Da Silva, Dupont ou Benali, ouvrier, artisan ou employé, on subit tous l'inflation, la baisse du pouvoir d'achat et l'abandon des services publics.</li>
+    </ol>
+    <div class="quote">« Vous répétez mot pour mot ce que la droite réactionnaire disait sur nos grands-parents. La réalité, c'est que ce n'est JAMAIS une question d'origine : quand tu mets des gens dans la misère, sans boulot et sans services publics, ça crée forcément des tensions. »</div>
+  </div>
+  <div class="boost">
+    <div class="bt">+ Pour aller plus loin — renforcer l'argument</div>
+    <ul>
+      <li><strong>Champ historique :</strong> Aigues-Mortes 1893 (émeutes meurtrières anti-italiens), Italiens et Portugais « voyous » — chaque vague d'immigration a été traitée ainsi, puis mythifiée.</li>
+      <li><strong>La condition prime :</strong> mettre l'accent sur les causes communes (précarité, services publics) plutôt que les différences. « Quand les gens d'un même quartier, quelle que soit leur origine, galèrent pour la même école, le même hôpital, les mêmes salaires — qui t'assures que tu n'es pas en train de t'attaquer à ton propre miroir ? »</li>
+      <li><strong>Intégration = emploi et services publics :</strong> l'ascenseur social des Trente Glorieuses n'était pas magique, il reposait sur le plein-emploi industriel — c'est la clé du « modèle français d'intégration », pas la couleur de peau.</li>
+      <li><span class="ref">Liens croisés :</span> fiche <a href="#f10">« Immigration »</a>, fiche <a href="#f15">« Fabrique de la peur »</a>, fiche <a href="#f8">« Extrêmes »</a>.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<SECTION class="part"><span class="ph">Partie D</span><h3>Sécurité, territoires, aide sociale</h3></SECTION>
+
+<div class="card" id="f12">
+  <div class="cliche">Le ressentiment à adresser</div>
+  <h4>« La police laisse les racailles tranquilles »</h4>
+  <div class="audience">Interlocuteur : excédé par les amendes, le sentiment d'injustice face à la police.</div>
+  <div class="body">
+    <ol class="pts">
+      <li class="c1"><strong>Constats sur le fonctionnement actuel de la police.</strong>
+        <ul class="sub">
+          <li><strong>Perte de temps et d'efficacité :</strong> on peut être d'accord — la police passe trop de temps en contrôles d'embêtement et en chiffre sur des détails au lieu de régler les gros problèmes. C'est absurde et invivable.</li>
+          <li><strong>En revanche, « les mecs des cités sont tranquilles » est FAUX :</strong> probabilité d'être contrôlé <strong>20 fois plus élevée</strong> que le reste de la population. La Cour de cassation a même condamné l'État pour faute lourde (contrôles au faciès, 2016).</li>
+        </ul>
+      </li>
+      <li class="c2"><strong>Évolution du rôle de la police.</strong>
+        <ul class="sub">
+          <li><strong>Changement de mission :</strong> la police a été transformée en police de contrôle et de statistiques au lieu d'une police d'enquête et de terrain.</li>
+          <li><strong>Impact des réformes :</strong> depuis la suppression de la police de proximité (Sarkozy), elle ne connaît plus le terrain et ne sert plus qu'à remplir des objectifs chiffrés.</li>
+        </ul>
+      </li>
+      <li class="c3"><strong>La proposition de LFI :</strong> le retour d'une police de proximité, des policiers qui connaissent les habitants et font de l'enquête à long terme, au lieu d'embêter les travailleurs avec des amendes toutes bêtes (cf. <a href="#f3">fiche « Laxiste »</a>).</li>
+    </ol>
+  </div>
+  <div class="boost">
+    <div class="bt">+ Pour aller plus loin — renforcer l'argument</div>
+    <ul>
+      <li><strong>Confirmer le ressenti, corriger la cible :</strong> « Oui, le contrôle-embêtement est insupportable. Mais le coupable n'est pas le jeune de cité, c'est une police qu'on a transformée en machine à chiffres. Les "racailles tranquilles" contre l'ouvrier verbalisé, c'est l'effet d'un système, pas d'une indulgence. »</li>
+      <li><strong>Chiffre clé :</strong> 20× plus de contrôle pour les jeunes des quartiers — preuve que le problème n'est pas le laxisme mais le ciblage.</li>
+      <li><strong>L'alternative :</strong> une police d'enquête et de proximité qui fait réellement son travail de terrain profite aux honnêtes gens, pas aux délinquants.</li>
+      <li><span class="ref">Liens croisés :</span> fiche <a href="#f3">« Trop laxiste »</a>, fiche <a href="#f13">« Zones rurales »</a> (même logique de moyens), fiche <a href="#f5">« Clientélisme »</a> (fin du faciès).</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card" id="f13">
+  <div class="cliche">L'opposition à déconstruire</div>
+  <h4>« LFI adore les banlieues et délaisse les zones rurales »</h4>
+  <div class="audience">Interlocuteur : rural qui pense que LFI ne s'intéresse qu'aux quartiers populaires.</div>
+  <div class="body">
+    <ol class="pts">
+      <li class="c1"><strong>Fausse opposition : les problèmes sont identiques.</strong>
+        <ul class="sub">
+          <li><strong>Déserts médicaux :</strong> manque de médecins dans la Creuse comme en Seine-Saint-Denis (un des pires déserts médicaux de France métropolitaine).</li>
+          <li><strong>Fermetures de services publics</strong> (classes, bureaux de poste, maternités…)</li>
+          <li><strong>Absence de transports en commun.</strong></li>
+        </ul>
+      </li>
+      <li class="c2"><strong>Idée reçue : « les banlieues coûtent déjà énormément ».</strong> FAUX. Le budget de la Politique de la Ville représente à peine 1 % du budget de l'État (0,2 %). Plusieurs rapports officiels (dont le rapport parlementaire Cornut-Gentille de 2018, rédigé par un homme de droite) prouvent que la Seine-Saint-Denis dispose de <strong>moins de moyens publics par habitant</strong> que la moyenne nationale (éducation, justice…).</li>
+      <li class="c3"><strong>Ce que propose LFI pour le monde rural :</strong>
+        <ul class="sub">
+          <li><strong>Prix planchers pour les agriculteurs :</strong> fixer par la loi un prix d'achat minimal pour empêcher la grande distribution de casser les prix.</li>
+          <li><strong>Plan « 0 désert médical » :</strong> recrutement de médecins par l'État et collectivités dans des centres de santé publics où on en manque.</li>
+          <li><strong>Interdiction stricte de fermer des services publics en zone rurale.</strong></li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+  <div class="boost">
+    <div class="bt">+ Pour aller plus loin — renforcer l'argument</div>
+    <ul>
+      <li><strong>Même constat, même combat :</strong> quartiers populaires et zones rurales souffrent des mêmes abandons (déserts médicaux, fermetures, transports) — lutter pour l'un, c'est lutter pour l'autre. Opposer ces territoires, c'est ce que la droite veut.</li>
+      <li><strong>Les chiffres retournent le cliché :</strong> 0,2 % du budget pour la Politique de la Ville = les banlieues sont sous-financées, pas choyées. Le rapport Cornut-Gentille (droit) le confirme.</li>
+      <li><strong>Propositions concrètes rurales :</strong> prix planchers (soutien agricole), 0 désert médical, interdiction de fermeture — autant d'engagements qui parlent directement aux ruraux.</li>
+      <li><span class="ref">Liens croisés :</span> fiche <a href="#f5">« Clientélisme »</a>, fiche <a href="#f16">« Richesse confisquée »</a>, fiche <a href="#f3">« Laxiste »</a>.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card" id="f14">
+  <div class="cliche">L'attaque à déconstruire</div>
+  <h4>« Les gauchos sont des assistés »</h4>
+  <div class="audience">Interlocuteur : porte le mépris social, « ils vivent des aides publiques ».</div>
+  <div class="body">
+    <ol class="pts">
+      <li class="c1"><strong>Qui sont les vrais assistés ?</strong>
+        <ul class="sub">
+          <li><strong>Réalité budgétaire :</strong> les plus grosses perfusions ne vont pas aux particuliers mais au capital. L'État verse chaque année environ <strong>200 milliards d'euros d'aides publiques aux entreprises</strong> (exonérations de cotisations, baisses d'impôts…), sans aucune condition de création d'emplois ou de hausse des salaires.</li>
+          <li><strong>Deux poids, deux mesures :</strong> l'État donne 100 € à quelqu'un pour l'empêcher de mourir de faim → la droite crie à l'assistanat. L'État verse des milliards (CICE, exonérations) au CAC 40 qui distribue des dividendes records ou délocalise → la droite appelle ça la « compétitivité ».</li>
+        </ul>
+        <div class="quote">« Les vrais assistés ne sont pas dans les HLM, ils sont au CAC 40. »</div>
+      </li>
+      <li class="c2"><strong>Le non-recours au RSA et la valeur du travail.</strong>
+        <ul class="sub">
+          <li><strong>34 % des personnes éligibles au RSA ne le réclament pas</strong> (CAF/DREES) : complexité administrative, manque d'information, honte sociale.</li>
+          <li>Le RSA ≈ <strong>635 €/mois</strong>, un niveau extrême de pauvreté. Personne ne vit bien avec un RSA.</li>
+          <li>Si un emploi à plein temps ne paraît pas attractif, c'est parce que les salaires ne permettent plus de payer loyer, énergie, courses → augmenter les salaires, c'est redonner sa vraie valeur au travail.</li>
+        </ul>
+      </li>
+      <li class="c3"><strong>Fraude sociale contre fraude fiscale.</strong>
+        <ul class="sub">
+          <li>La droite adore parler de la fraude aux allocations pour faire oublier la leur.</li>
+          <li><strong>Fraude sociale : 2-3 milliards/an</strong> (souvent des erreurs administratives) VS <strong>fraude et évasion fiscale : 80-100 milliards/an</strong> perdus pour le Trésor public.</li>
+        </ul>
+      </li>
+      <li class="c4"><strong>Ce que propose LFI concrètement :</strong>
+        <ul class="sub">
+          <li>Hausse du SMIC à <strong>1 600 € net</strong> + abrogation des réformes de l'assurance chômage et des retraites (<strong>retour à 60 ans</strong>)</li>
+          <li><strong>Garantie d'emploi :</strong> l'État employeur en dernier ressort (emploi au SMIC dans des secteurs d'utilité sociale/écologique, via mairies et associations)</li>
+          <li><strong>Conditionnement strict des aides aux entreprises :</strong> pas d'aides publiques sans contrepartie.</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+  <div class="boost">
+    <div class="bt">+ Pour aller plus loin — renforcer l'argument</div>
+    <ul>
+      <li><strong>Retourner le mot « assisté » :</strong> 200 Mds€/an au capital sans condition = la vraie assistance, à quelques-uns, sur le dos de tous. Les 635 € du RSA ne font vivre personne.</li>
+      <li><strong>Le travail, valeur cardinale :</strong> si le travail ne paie plus (loyer, énergie, courses), ce n'est pas « des gens qui ne veulent pas », c'est des salaires insuffisants. Revaloriser le travail = revaloriser les gens.</li>
+      <li><strong>Échelle de la fraude :</strong> 80-100 Mds€ d'évasion fiscale contre 2-3 Mds€ de fraude sociale « montrée du doigt ». Le soupçon est dirigé vers le bas, pas vers le haut (voir <a href="#f17">« Propagande »</a>).</li>
+      <li><span class="ref">Liens croisés :</span> fiche <a href="#f6">« Ruiner le pays »</a>, fiche <a href="#f10">« Immigration »</a> (coût), fiche <a href="#f19">« 3 arguments »</a>.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<SECTION class="part"><span class="ph">Partie E</span><h3>La fabrique de l'opinion</h3></SECTION>
+
+<div class="card" id="f15">
+  <div class="cliche">Le mécanisme à démasquer</div>
+  <h4>Fabrication et mise en scène de la peur</h4>
+  <div class="audience">Interlocuteur : convaincre que la peur est instrumentalisée politiquement.</div>
+  <div class="body">
+    <p><strong>La peur est la meilleure arme de diversion</strong> d'un gouvernement incapable de défendre son bilan socio-économique.</p>
+    <ol class="pts">
+      <li class="c1"><strong>Créer un sentiment d'insécurité permanent</strong> — même dans les campagnes où la télé est la seule fenêtre, « l'autre » devient une figure abstraite et menaçante ; on craint des agressions inexistantes au lieu de craindre de ne pas trouver de médecin. <em>La droite préfère que les gens aient peur des jeunes de cité ou des immigrés plutôt que de perdre leur emploi ou de ne pas payer leurs factures.</em></li>
+      <li class="c2"><strong>Mise en scène du désordre :</strong> « le gouvernement radicalise la rue seulement pour mieux la condamner ».</li>
+      <li class="c3"><strong>Remettre la faute ailleurs (stratégie de tension) :</strong> les CRS créent eux-mêmes l'affrontement (nasses, gaz). Le débat passe de « pourquoi ces jeunes manifestent ? » à « comment punir ces casseurs ? » → le gouvernement n'est plus responsable de la crise mais <strong>le sauveur, le rempart au chaos</strong>.</li>
+      <li class="c4"><strong>Silence sur la violence sociale :</strong> un retraité qui ne peut plus chauffer son logement, un patient qui meurt sur un brancard ne sont jamais traités comme du « désordre » ou du « cassage » — alors que c'est encore plus violent.</li>
+    </ol>
+    <p>Tout cela <strong>légitimise l'autoritarisme</strong> : plus une population a peur, plus elle accepte la baisse des libertés publiques (interdictions de manif, sécurité globale). Et quand on gouverne par la peur : on masque les injustices réelles, et on divise les classes populaires pour les empêcher de s'unir contre l'oligarchie financière.</p>
+    <p><strong>— Stratégie du choc :</strong> utiliser le chaos pour faire passer en douce des réformes.</p>
+    <p><strong>Quelques exemples :</strong>
+    <ul class="sub">
+      <li><strong>Crise Covid :</strong> le gouvernement vote la possibilité de déroger aux 35h (jusqu'à 60h dans certains domaines).</li>
+      <li><strong>Attentats du 11-Septembre / « Tours jumelles » :</strong> le Congrès vote le Patriot Act, restriction massive des libertés individuelles (surveillance de masse sans mandat).</li>
+      <li><strong>Le Chili sous Pinochet (1973) :</strong> coup d'État sanglant, couvre-feu, population terrorisée → programme ultra-libéral brutal (privatisation totale santé/éducation, suppression de la protection du travail).</li>
+    </ul></p>
+  </div>
+  <div class="boost">
+    <div class="bt">+ Pour aller plus loin — renforcer l'argument</div>
+    <ul>
+      <li><strong>De la peur à l'autoritarisme :</strong> faire le lien entre amplification médiatique de l'insécurité et lois liberticides (surveillance, interdictions). La peur est un carburant, l'autorité est l'échappement.</li>
+      <li><strong>Financer la division :</strong> la peur de l'autre empêche les travailleurs de s'unir malgré des intérêts communs — c'est un outil de classe, pas un accident médiatique.</li>
+      <li><strong>Cas historiques :</strong> Patriot Act, Pinochet, dérogation aux 35h en Covid → montrer que la « stratégie du choc » est un réflexe, pas une théorie.</li>
+      <li><span class="ref">Liens croisés :</span> fiche <a href="#f17">« Propagande des médias »</a>, fiche <a href="#f10">« Immigration »</a>, fiche <a href="#f9">« RN petites gens »</a>.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card" id="f17">
+  <div class="cliche">Le système à démasquer</div>
+  <h4>La propagande des médias</h4>
+  <div class="audience">Interlocuteur : pourquoi tant de médias défendent le « consensus » et discréditent la gauche.</div>
+  <div class="body">
+    <ol class="pts">
+      <li class="c1"><strong>Concentration et propriété des médias.</strong> En France, <strong>9 milliardaires possèdent plus de 90 % des médias privés</strong> (presse, télé, radio).
+        <ul class="sub">
+          <li>Bolloré : Canal+, CNews, C8, Paris Match…</li>
+          <li>Bernard Arnault : Le Parisien, Les Échos…</li>
+          <li>Patrick Drahi : BFM, RMC…</li>
+          <li>Ils protègent leurs affaires et influencent les lois en orientant les débats dans leur sens.</li>
+        </ul>
+      </li>
+      <li class="c2"><strong>L'indépendance de la presse et ses menaces.</strong> L'indépendance de la presse est la base de la démocratie, mais elle a souvent été menacée. Avant la 2ᵉ GM, les grands journaux étaient rachetés par des industriels ; le <strong>CNR en 1944</strong> avait exigé l'interdiction de la concentration des médias par la finance. Comme le montre Chomsky (« La fabrication du consentement »), dans un système privé la censure passe par :
+        <ul class="sub">
+          <li><strong>La sélection des sujets</strong> : parler H24 de faits divers/immigration plutôt que de fraude fiscale ou de l'état des hôpitaux.</li>
+          <li><strong>Le choix des invités</strong> : plus de 70 % d'intervenants de droite / extrême droite sur beaucoup de plateaux.</li>
+        </ul>
+        <div class="quote">Métaphore du menu : si un chef ne propose que de la viande et interdit le poisson, à la fin de l'année tu croiras que le poisson est toxique, voire qu'il n'existe pas.</div>
+      </li>
+      <li class="c3"><strong>LFI veut garantir la liberté de la presse :</strong>
+        <ul class="sub">
+          <li><strong>Loi anti-concentration :</strong> interdire à un même groupe d'être propriétaire au-delà d'un certain pourcentage de médias.</li>
+          <li><strong>Indépendance des rédactions :</strong> droit de veto des journalistes contre le licenciement d'une rédaction entière (ex. Bolloré a changé la ligne édito du JDD en 2023).</li>
+          <li><strong>Pérenniser le service public de l'info :</strong> financement stable pour France Télévisions et Radio France, face aux tentatives de privatisation.</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+  <div class="boost">
+    <div class="bt">+ Pour aller plus loin — renforcer l'argument</div>
+    <ul>
+      <li><strong>« 90 % des médias privés entre 9 mains » :</strong> la pluralité de façade cache une concentration réelle. Une démocratie exige des médias indépendants du capital.</li>
+      <li><strong>Censure par l'omission :</strong> la « fabrication du consentement » ne censure pas par la force, mais par ce qu'on choisit de montrer (et par qui parle). Reconnaître le biais, c'est déjà s'en libérer.</li>
+      <li><strong>Solutions concrètes :</strong> loi anti-concentration, veto des rédactions, service public sanctuarisé — trois mesures simples et opposables.</li>
+      <li><strong>Approche :</strong> plutôt que d'accuser les médias (« complot »), montrer la <em>structure</em> (propriété, sujets, invités) — plus convaincant, moins conspirationniste.</li>
+      <li><span class="ref">Liens croisés :</span> fiche <a href="#f15">« Fabrique de la peur »</a>, fiche <a href="#f7">« Mélenchon »</a> (traitement médiatique), fiche <a href="#f2">« Antisémitisme »</a>.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<SECTION class="part"><span class="ph">Partie F</span><h3>Le programme économique</h3></SECTION>
+
+<div class="card" id="f16">
+  <div class="cliche">Le constat à révéler</div>
+  <h4>La France produit une richesse qu'elle confisque</h4>
+  <div class="audience">Interlocuteur : croit que « la France n'a plus les moyens ».</div>
+  <div class="body">
+    <ol class="pts">
+      <li class="c1"><strong>Un PIB record.</strong> En 2023-2024, le PIB a dépassé pour la première fois <strong>2 800 milliards d'euros</strong> (INSEE). Même en corrigeant l'inflation, la richesse créée en un an n'a jamais été aussi élevée.</li>
+      <li class="c2"><strong>Une accumulation de fortunes sans précédent.</strong> Pendant que les Français ont faim et que les services publics périssent, les plus riches accumulent. Sous Macron (2017-2024), le patrimoine cumulé des 500 plus grandes fortunes est passé de <strong>570 milliards à plus de 1 200 milliards</strong> — <strong>plus que doublé en 7 ans</strong>. La France abrite l'homme le plus riche du monde (Bernard Arnault/LVMH) et la femme la plus riche du monde (Françoise Bettencourt Meyers/L'Oréal). <strong>Les 4 premiers milliardaires français possèdent autant que les 30 % les plus pauvres</strong> (Oxfam / Banque de France).</li>
+      <li class="c3"><strong>Superprofits et dividendes records du CAC 40.</strong>
+        <ul class="sub">
+          <li><strong>Bénéfices historiques :</strong> bénéfices nets cumulés de <strong>140-150 milliards d'euros</strong>.</li>
+          <li>En 2023, le CAC 40 a versé près de <strong>100 milliards d'euros à ses actionnaires</strong> (dividendes + rachats d'actions) : ni salaires, ni investissement public, ni services sociaux.</li>
+        </ul>
+      </li>
+      <li class="c4"><strong>Un problème de répartition.</strong> L'argent existe mais il échappe à l'impôt (fraude fiscale + écarts d'imposition, cf. <a href="#f6">« LFI va ruiner le pays »</a>). <strong>La France n'a jamais été si riche :</strong> le problème n'est pas qu'on ne produit pas assez, c'est que la part allant au capital et aux milliardaires a explosé pendant que celle allant au travail et aux services publics s'est effondrée.</li>
+    </ol>
+  </div>
+  <div class="boost">
+    <div class="bt">+ Pour aller plus loin — renforcer l'argument</div>
+    <ul>
+      <li><strong>« La France n'a pas d'argent » = faux :</strong> PIB record (2 800 Mds€), fortunes doublées en 7 ans. Le problème est la <em>répartition</em>, pas la production.</li>
+      <li><strong>Choc des chiffres :</strong> 100 Mds€ de dividendes/an au CAC 40 ↔ 80-100 Mds€ de fraude fiscale/an (<a href="#f14">« Assistés »</a>) — l'argent est là, il est simplement confisqué en haut.</li>
+      <li><strong>Inégalité extrême :</strong> 4 milliardaires possèdent autant que 30 % des plus pauvres. Inutile d'être « envieux », c'est une question d'équilibre démocratique.</li>
+      <li><span class="ref">Liens croisés :</span> fiche <a href="#f6">« Ruiner le pays »</a>, fiche <a href="#f14">« Assistés »</a>, fiche <a href="#f5">« Clientélisme »</a>.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<SECTION class="part"><span class="ph">Partie G</span><h3>Le projet : la 6ᵉ République</h3></SECTION>
+
+<div class="card" id="f18">
+  <div class="cliche">La proposition phare</div>
+  <h4>Pour la 6ᵉ République</h4>
+  <div class="audience">Interlocuteur : dégoûté de la politique, désillusionné par la 5ᵉ République.</div>
+  <div class="body">
+    <ol class="pts">
+      <li class="c1"><strong>Fin de la « monarchie présidentielle ».</strong> Redonner le pouvoir réel au peuple et aux parlementaires. Aujourd'hui, la France est le pays démocratique où un <strong>seul homme</strong> (le Président) concentre le plus de pouvoirs : il peut seul envoyer l'armée, passer des lois en force (usage record du 49.3), ignorer le Parlement.</li>
+      <li class="c2"><strong>6ᵉ République : un pouvoir présidentiel largement réduit.</strong>
+        <ul class="sub">
+          <li><strong>Suppression du 49.3 :</strong> plus aucune loi imposée sans le vote de l'Assemblée.</li>
+          <li><strong>Fin du « monarque » :</strong> le Président devient un arbitre, plus un chef tout-puissant ; il ne décide plus seul des grands choix sans vote du Parlement.</li>
+          <li><strong>Référendum de révocation</strong> (cf. <a href="#f19">« 3 arguments déclics »</a>).</li>
+        </ul>
+      </li>
+      <li class="c3"><strong>Pouvoir redistribué au Peuple et au Parlement.</strong>
+        <ul class="sub">
+          <li><strong>Référendum d'Initiative Citoyenne (RIC) :</strong> si un nombre suffisant de citoyens le demande (loi, abrogation, Constitution), le RIC est obligatoirement organisé.</li>
+          <li><strong>Proportionnelle intégrale à l'Assemblée :</strong> chaque courant représenté à hauteur de son score ; fini les majorités absolues artificielles qui verrouillent.</li>
+          <li>Tout élu condamné pour fraude fiscale, corruption ou détournement est <strong>banni à vie de la politique</strong>.</li>
+        </ul>
+      </li>
+      <li class="c4"><strong>Pour cela : élection d'une Assemblée constituante.</strong> Les Français élisent des citoyens dont la seule mission est de rédiger la nouvelle constitution (1 à 2 ans), soumise ensuite à un référendum national.</li>
+    </ol>
+  </div>
+  <div class="boost">
+    <div class="bt">+ Pour aller plus loin — renforcer l'argument</div>
+    <ul>
+      <li><strong>Le dépotoir du dégoût :</strong> le RN et le centre jouent sur le rejet des « politiques », mais sans changer le système. La 6ᵉ République répond au dégoût par des <em>institutions</em>, pas par un homme providentiel.</li>
+      <li><strong>Concret et vérifiable :</strong> supprimer le 49.3, RIC, proportionnelle, révocation, bannissement des corrompus — des mesures faciles à comprendre et à défendre.</li>
+      <li><strong>La démocratie comme horizon :</strong> plus de pouvoirs au peuple (référendums), moins à un homme. C'est la réponse la plus crédible à la crise démocratique.</li>
+      <li><span class="ref">Liens croisés :</span> fiche <a href="#f19">« 3 arguments déclics »</a>, fiche <a href="#f7">« Mélenchon »</a> (son pouvoir sera limité), fiche <a href="#f8">« Extrêmes »</a>.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card" id="f19">
+  <div class="cliche">Les arguments qui font basculer</div>
+  <h4>3 arguments « déclics » pour un vote LFI</h4>
+  <div class="audience">Interlocuteur : hésitant, dégoûté, tenté par le RN ou par l'abstention.</div>
+  <div class="body">
+    <ol class="pts">
+      <li class="c1"><strong>1. La fin des politiques intouchables.</strong> Ceux que la politique dégoûte détestent les élus intouchables pendant 5 ans. LFI propose, avec la 6ᵉ République, le <strong>Référendum de révocation</strong> : après 2 ans et demi de mandat, les citoyens peuvent <strong>VIRER</strong> le Président et les élus qui font n'importe quoi ou trahissent leurs promesses.</li>
+      <li class="c2"><strong>2. Ta vie s'améliorerait dès le premier mois.</strong> Changement <strong>DÈS LE PREMIER MOIS</strong> : blocage immédiat des prix (pâtes, huile, essence, électricité) et <strong>SMIC à 1 600 € net</strong>. <em>N'est-ce pas ce que tu veux ?</em></li>
+      <li class="c3"><strong>3. Déconstruire l'illusion du vote RN.</strong>
+        <ul class="sub">
+          <li><strong>« Autant tester le RN » :</strong> tu vas juste tester encore plus d'austérité, encore pire que sous Macron.</li>
+          <li>« La France n'a plus d'argent pour les écoles, retraites, hôpitaux » ? <strong>Faux : la France n'a jamais été aussi riche</strong>, mais l'argent est confisqué en haut. LFI veut récupérer les milliards de l'évasion fiscale pour permettre de partir à la retraite à 60 ans en bonne santé.</li>
+          <li><strong>Historiquement</strong>, à chaque fois que l'extrême droite s'est alliée aux forces de l'argent et au patronat (comme sous Vichy), cela s'est traduit par la destruction des acquis sociaux, la répression des syndicats et l'alignement sur les intérêts des plus riches — pendant qu'elle désignait des boucs émissaires (arabe/immigrés aujourd'hui).</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+  <div class="boost">
+    <div class="bt">+ Pour aller plus loin — renforcer l'argument</div>
+    <ul>
+      <li><strong>Angle émotionnel + concret :</strong> le « premier mois » (prix + SMIC) est l'argument le plus directement perceptible ; le référendum de révocation parle au dégoût anti-politique.</li>
+      <li><strong>Le vote RN testé ?</strong> Le RN a déjà voté contre le SMIC, contre le blocage des prix, contre l'ISF (<a href="#f9">fiche RN</a>). « Tester le RN » = l'austérité en pire.</li>
+      <li><strong>La richesse réelle :</strong> France plus riche que jamais (2 800 Mds€ de PIB, fortunes doublées, <a href="#f16">« Richesse confisquée »</a>) — le discours de la pénurie est un choix politique, pas une fatalité.</li>
+      <li><span class="ref">Liens croisés :</span> fiche <a href="#f18">« 6ᵉ République »</a>, fiche <a href="#f9">« RN petites gens »</a>, fiche <a href="#f16">« Richesse »</a>.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card" id="f1">
+  <div class="cliche">Synthèse stratégique</div>
+  <h4>Répondre aux accusations contre LFI — le mode d'emploi</h4>
+  <div class="body">
+    <p>Cette section simplifiée regroupe les réflexes à adopter face aux 8 accusations les plus courantes. Le détail et les données se trouvent dans chaque fiche dédiée.</p>
+    <ol class="pts">
+      <li class="c1"><strong>« LFI est antisémite »</strong> → Demander les preuves (programme, position officielle) ; distinguer critique d'un État et haine d'un peuple ; rappeler que les préjugés antisémites sont portés par l'extrême droite, pas par la gauche universaliste. <a href="#f2">Fiche complète →</a></li>
+      <li class="c2"><strong>« LFI est laxiste »</strong> → Sécurité réellement efficace : police de proximité, juges, prévention, fin du faciès ; légalisation encadrée du cannabis contre les trafics. <a href="#f3">Fiche complète →</a></li>
+      <li class="c3"><strong>« LFI est radical »</strong> → Le vrai dérapage, c'est la dette de Macron, la retraite à 64 ans sans vote, la casse des services publics. « Radical », c'est demander le retour des richesses volées. <a href="#f4">Fiche complète →</a></li>
+      <li class="c4"><strong>« LFI communautarise »</strong> → LFI parle de condition sociale, pas d'origine ; le clientélisme est en haut (CICE, niches), pas en bas ; la laïcité de 1905 est défendue, pas détournée. <a href="#f5">Fiche complète →</a></li>
+    </ol>
+    <p><em>Chacune de ces réponses se lit en 30 secondes et se déploie en détail via les fiches correspondantes ci-dessus.</em></p>
+  </div>
+</div>
+
+<footer>
+  <p>Kit d'argumentation LFI — 18 fiches fusionnées &amp; enrichies. Contenu basé sur les fiches originales du dossier « 🐴 Fiches Politique LFI », complétées d'angles de renforcement et de renvois croisés.</p>
+  <p>Les chiffres cités proviennent des fiches sources (INSEE, CNCDH, Oxfam, DREES, rapports parlementaires, etc.). Les rubriques « + Pour aller plus loin » proposent des angles d'approfondissement à vérifier et actualiser avant diffusion publique.</p>
+  <a class="back" href="#top">↑ Revenir au sommaire</a>
+</footer>
+
+</div>
+</body>
+</html>
